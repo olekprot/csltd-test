@@ -1,0 +1,87 @@
+
+<form [formGroup]="dialogFormOwner" *ngIf="dialogFormOwner" (ngSubmit)="saveOwner()" novalidate>
+  <div class="owner_info" >
+      <label> Фамилия
+          <input type="text" formControlName="aLastName" [readonly]="action !='edit' && !newOwner">
+          <div *ngIf="dialogFormOwner.get('aLastName')?.invalid && dialogFormOwner.get('aLastName')?.touched" class="validation">
+            <small *ngIf="dialogFormOwner.get('aLastName')?.errors?.required">Поле должно быть заполнено</small>
+          </div>
+      </label>
+      <label> Имя
+          <input type="text" formControlName="aFirstName" [readonly]="action !='edit' && !newOwner"> 
+          <div *ngIf="dialogFormOwner.get('aFirstName')?.touched && dialogFormOwner.get('aFirstName')?.invalid" class="validation">
+            <small *ngIf="dialogFormOwner.get('aFirstName')?.errors?.required">Поле должно быть заполнено</small>
+          </div>
+      </label>
+      <label> Отчество
+          <input type="text" formControlName="aMiddleName" [readonly]="action !='edit' && !newOwner">
+          <div *ngIf="dialogFormOwner.get('aMiddleName')?.touched && dialogFormOwner.get('aMiddleName')?.invalid" class="validation">
+            <small *ngIf="dialogFormOwner.get('aMiddleName')?.errors?.required">Поле должно быть заполнено</small>
+          </div>
+      </label>
+  </div>
+  <div class="cars_info">
+      <table>
+          <thead>
+            <tr>
+              <th scope="col">Номер</th>
+              <th scope="col">Марка</th>
+              <th scope="col">Модель</th>
+              <th scope="col">Год</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table_list" formArrayName="aCars" *ngFor="let item of getCars(); let i = index;">
+              <ng-container [formGroupName]="i">
+                <td>
+                    <input type="text" name="carNumber" formControlName="carNumber" [readonly]="action !='edit' && !newOwner">
+                    <div class="validation" *ngIf="getFormsControls(i).get('carNumber')?.touched && getFormsControls(i).get('carNumber')?.invalid">
+                      <small *ngIf="getFormsControls(i).get('carNumber')?.errors?.required">Введите номер автомобиля</small>
+                      <small *ngIf="getFormsControls(i).get('carNumber')?.errors?.pattern">Введите номер в формате "АА1111АА"</small>
+                      <small *ngIf="getFormsControls(i).get('carNumber')?.errors?.carNumber">Такой номер уже существует</small>
+                    </div>
+                </td>
+                
+                <td data-label="carName">
+                  <input type="text" formControlName="carName" [readonly]="action !='edit' && !newOwner">
+                  <div class="validation" *ngIf="getFormsControls(i).get('carName')?.touched && getFormsControls(i).get('carName')?.invalid">
+                    <small *ngIf="getFormsControls(i).get('carName')?.errors?.required">Введите марку автомобиля</small>
+                  </div>
+                </td>
+                <td data-label="carModel">
+                  <input type="text" formControlName="carModel" [readonly]="action !='edit' && !newOwner">
+                  <div class="validation" *ngIf="getFormsControls(i).get('carModel')?.touched && getFormsControls(i).get('carModel')?.invalid">
+                    <small *ngIf="getFormsControls(i).get('carModel')?.errors?.required">Введите модель автомобиля</small>
+                  </div>
+                </td>
+                <td data-label="carYear">
+                  <input type="number" formControlName="carYear" [readonly]="action !='edit' && !newOwner">
+                  <div class="validation" *ngIf="getFormsControls(i).get('carYear')?.touched && getFormsControls(i).get('carYear')?.invalid">
+                    <small *ngIf="getFormsControls(i).get('carYear')?.errors?.required">Введите год выпуска автомобиля</small>
+                    <small *ngIf="getFormsControls(i).get('carYear')?.errors?.pattern">Год должен быть от 1990 до 2021"</small>
+                  </div>
+                </td>
+                <td>
+                    <button (click)="deleteCar(i)" *ngIf="action=='edit'">Delete</button>
+                </td>
+              </ng-container>
+            </tr>
+            
+          </tbody>
+          
+        </table>
+        <h3 *ngIf='dialogFormOwner.getRawValue().aCars.length < 1'>Добавьте автомобиль!</h3>
+        
+  </div>
+  <div class="btn_list">
+      <button class="btn btn_add" *ngIf="action=='edit' || newOwner " (click)="addCar()">+Добавить автомобиль</button>
+      <button class="btn btn_save" *ngIf="action=='edit' || newOwner " 
+              type="submit"
+              >
+              Сохранить
+      </button>
+      <button class="btn btn_back" [routerLink]="['/form']">Назад</button>
+  </div>
+
+</form>
